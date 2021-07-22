@@ -1,6 +1,6 @@
 package br.com.conexa.imedicina.desafio.enumerable;
 
-public enum Status {
+public enum AccessStatus {
     ONLINE,
     OFFLINE
 }

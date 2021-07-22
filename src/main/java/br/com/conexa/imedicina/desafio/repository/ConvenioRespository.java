@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ConvenioRespository extends JpaRepository<Convenio,Long> {
+public interface ConvenioRespository extends JpaRepository<Convenio, Integer> {
 
-    List<Convenio>findByName(String name);
+    List<Convenio> findByName(String name);
 
 }
