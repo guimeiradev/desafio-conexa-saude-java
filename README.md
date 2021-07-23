@@ -4,8 +4,7 @@ Foi feito CRUD'S para cadastro de clientes e profissionais novos, utilizei o ban
 executando com docker-compose. Por fim, realizei testes unitarios para garantir que cada unidade atende corretamente sua especificação.</p>
 
 
-**<p>Obs: Para facilitar o teste da API no Postman, importe a collection: Desafio-Conexa-iMedicina.postman_collection.json </p>
-**
+**<p>Obs: Para facilitar o teste da API no Postman, importe a collection: Desafio-Conexa-iMedicina.postman_collection.json </p>**
 
 ### Features
 
