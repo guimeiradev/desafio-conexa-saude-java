@@ -11,6 +11,16 @@
 				{
 					"name": "Busca Todos Pacientes",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJndWkiLCJpYXQiOjE2MjcwMDI5MzQsImV4cCI6MTYyNzAxMzczNH0.vZKx9PaKuCY2sJyzfuW8WxXk0nVBIsV3OsSup1NSXQI",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -50,7 +60,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fullName\": \"Lucas\",\n    \"cpf\": \"1111111\",\n    \"username\": \"lucas\",\n    \"password\": \"12345\",\n    \"convenioId\": 1\n}",
+							"raw": "{\n    \"fullName\": \"AAA ddA\",\n    \"cpf\": \"1111111\",\n    \"username\": \"lucas\",\n    \"password\": \"12345\",\n    \"convenioId\": 4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -113,6 +123,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Filtrar Paciente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/pacientes/filtrar?profissionalCRM=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pacientes",
+								"filtrar"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "AAA ddA",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "profissionalName",
+									"value": "xxx",
+									"disabled": true
+								},
+								{
+									"key": "profissionalCRM",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -161,7 +210,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fullName\": \"Lucas\",\n    \"crm\": \"1111111\",\n    \"avaliacao\": 3,\n    \"conveniosIds\": [\n        1,2,3\n    ]\n}",
+							"raw": "{\n    \"fullName\": \"Profissional 2\",\n    \"crm\": \"2\",\n    \"avaliacao\": 3,\n    \"conveniosIds\": [\n        1,2,3\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -192,7 +241,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"pacienteId\": 3,\n    \"profissionalId\": 1,\n    \"scheduleDateTime\": \"2021-07-21T10:00:00+01:00\"\n}",
+							"raw": "{\n    \"pacienteId\": 2,\n    \"profissionalId\": 1,\n    \"scheduleDateTime\": \"2021-07-21T10:00:00+01:00\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -215,10 +264,95 @@
 				{
 					"name": "Buscar Agendas Disponiveis",
 					"request": {
-						"method": "GET",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "schedule",
+								"value": "2021-07-21T10:00:00+01:00",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pacienteId\": 3,\n    \"scheduleDateTime\": \"2021-07-21T10:00:00+01:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "{{url}}/consulta/agendas-disponiveis/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"consulta",
+								"agendas-disponiveis",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"gui\",\n    \"password\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"AAA ddA\",\n    \"cpf\": \"1111111\",\n    \"username\": \"gui\",\n    \"password\": \"12345\",\n    \"convenioId\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/cadastrar",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"cadastrar"
+							]
 						}
 					},
 					"response": []
