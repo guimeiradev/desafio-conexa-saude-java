@@ -3,6 +3,14 @@
 Foi feito CRUD'S para cadastro de clientes e profissionais novos, utilizei o banco de dados MySql, gerando imagem no docker utilizando plugin jib e 
 executando com docker-compose. Por fim, realizei testes unitarios para garantir que cada unidade atende corretamente sua especificação.</p>
 
+
+### Features
+
+- [x] Cadastro de paciente
+- [x] Cadastro de profissional
+- [x] Cadastro de convênio 
+- [x] Listagem de pacientes, porfissionais e convênios 
+
 ### 🛠 Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
