@@ -9,6 +9,7 @@ import br.com.conexa.imedicina.desafio.enumerable.AvailabilityStatus;
 import br.com.conexa.imedicina.desafio.exception.CustomException;
 import br.com.conexa.imedicina.desafio.mapper.ProfissionalMapper;
 import br.com.conexa.imedicina.desafio.repository.ProfissionalRepository;
+import br.com.conexa.imedicina.desafio.repository.ProfissionalSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,15 @@ public class ProfissionalService {
             throw new CustomException("Não existem profissionais para esse convênio", HttpStatus.NOT_FOUND);
         }
         return profissionais;
+    }
+
+    public Profissional findByNameAndCrm(String profissionalName, String profissionalCRM) {
+        List<Profissional> profissionals = profissionalRepository.findAll(
+                ProfissionalSpecification.byCRM(profissionalCRM)
+                        .and(ProfissionalSpecification.byFullName(profissionalName)));
+
+        if (!profissionals.isEmpty())
+            return profissionals.get(0);
+        return new Profissional();
     }
 }

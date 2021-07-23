@@ -5,6 +5,7 @@ import br.com.conexa.imedicina.desafio.domain.Paciente;
 import br.com.conexa.imedicina.desafio.domain.Profissional;
 import br.com.conexa.imedicina.desafio.dto.request.ScheduleRequestDto;
 import br.com.conexa.imedicina.desafio.dto.response.AppointmentDto;
+import br.com.conexa.imedicina.desafio.enumerable.AccessStatus;
 import br.com.conexa.imedicina.desafio.exception.CustomException;
 import br.com.conexa.imedicina.desafio.exception.ProfessionalAlreadyInUseException;
 import br.com.conexa.imedicina.desafio.mapper.ProfissionalMapper;
@@ -68,6 +69,9 @@ public class AppointmentService {
 
     public AppointmentDto findAvailableBySchedule(ZonedDateTime schedule, Long pacienteId) {
         Paciente paciente = pacienteService.findById(pacienteId);
+
+        if (paciente.getOnlineAccessStatus().equals(AccessStatus.OFFLINE))
+            throw new CustomException("Paciente offline não pode agendar", HttpStatus.BAD_REQUEST);
 
         Set<Profissional> profissionals = profissionalService.findAllAvailableByConvenio(paciente.getConvenio());
 

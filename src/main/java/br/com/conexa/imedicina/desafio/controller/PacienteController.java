@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("pacientes")
@@ -57,5 +59,17 @@ public class PacienteController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<PacienteDto> update(@PathVariable long id, @RequestBody PacientePutDto pacientePutDto) {
         return new ResponseEntity<>(PacienteMapper.toDto(pacienteService.update(id, pacientePutDto)), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/filtrar")
+    public ResponseEntity<List<PacienteDto>> filter(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer status,
+            @RequestParam(required = false) String profissionalName,
+            @RequestParam(required = false) String profissionalCRM
+    ) {
+        return ResponseEntity.ok(pacienteService.filter(name, status, profissionalName, profissionalCRM)
+                .stream()
+                .map(PacienteMapper::toDto).collect(Collectors.toList()));
     }
 }
