@@ -16,6 +16,7 @@ executando com docker-compose. Por fim, realizei testes unitarios para garantir 
 - ✅ Cadastro de profissional
 - ✅ Cadastro de convênio 
 - ✅ Listagem de pacientes, porfissionais e convênios 
+- ✅ Autenticação  
 
 ### 🛠 Tecnologias
 
