@@ -10,7 +10,7 @@ executando com docker-compose. Por fim, realizei testes unitarios para garantir 
 
 **<p align="center">Obs: Para facilitar o teste da API no Postman, importe a collection: Desafio-Conexa-iMedicina.postman_collection.json </p>**
 
-### Features
+## Features
 
 - ✅ Cadastro de paciente
 - ✅ Cadastro de profissional
