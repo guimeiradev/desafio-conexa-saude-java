@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Data
 @Builder
 public class AvailableAppoitmentRequestDto {
 
-    private ZonedDateTime scheduleDateTime;
+    private Date scheduleDateTime;
     private Long pacienteId;
 
 }

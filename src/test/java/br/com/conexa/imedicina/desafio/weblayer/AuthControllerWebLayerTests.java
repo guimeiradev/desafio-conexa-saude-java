@@ -3,6 +3,8 @@ package br.com.conexa.imedicina.desafio.weblayer;
 import br.com.conexa.imedicina.desafio.controller.AuthController;
 import br.com.conexa.imedicina.desafio.dto.request.LoginDto;
 import br.com.conexa.imedicina.desafio.dto.request.PacientePostDto;
+import br.com.conexa.imedicina.desafio.dto.response.AuthenticationResponse;
+import br.com.conexa.imedicina.desafio.dto.response.PacienteDto;
 import br.com.conexa.imedicina.desafio.security.JwtTokenProvider;
 import br.com.conexa.imedicina.desafio.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +45,8 @@ public class AuthControllerWebLayerTests {
                 .password("1234")
                 .username("username")
                 .build();
-        Mockito.when(authService.login(loginDto)).thenReturn("faketoken");
+        Mockito.when(authService.login(loginDto)).thenReturn(
+                new AuthenticationResponse("faketoken", PacienteDto.builder().build()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login").content(mapper.writeValueAsBytes(loginDto))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -60,7 +63,9 @@ public class AuthControllerWebLayerTests {
                 .cpf("1111111")
                 .fullName("Guilherme Meira")
                 .build();
-        Mockito.when(authService.signup(pacientePostDto)).thenReturn("faketoken");
+
+        Mockito.when(authService.signup(pacientePostDto)).thenReturn(
+                new AuthenticationResponse("faketoken", PacienteDto.builder().build()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/cadastrar").content(mapper.writeValueAsBytes(pacientePostDto))
                 .contentType(MediaType.APPLICATION_JSON))

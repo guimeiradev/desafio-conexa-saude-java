@@ -1,6 +1,7 @@
 package br.com.conexa.imedicina.desafio.service;
 
 import br.com.conexa.imedicina.desafio.domain.Convenio;
+import br.com.conexa.imedicina.desafio.domain.Paciente;
 import br.com.conexa.imedicina.desafio.domain.Profissional;
 import br.com.conexa.imedicina.desafio.dto.request.ProfissionalPostDto;
 import br.com.conexa.imedicina.desafio.dto.request.ProfissionalPutDto;
@@ -13,6 +14,7 @@ import br.com.conexa.imedicina.desafio.repository.ProfissionalSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -35,6 +37,7 @@ public class ProfissionalService {
                 .orElseThrow(() -> new CustomException("Profissional não encontrado", HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
     public ProfissionalDto save(ProfissionalPostDto profissionalPostDto) {
         Profissional profissional = ProfissionalMapper.toEntity(profissionalPostDto);
         profissional.setStatus(AvailabilityStatus.DISPONIVEL);
@@ -47,15 +50,24 @@ public class ProfissionalService {
         profissionalRepository.delete(findById(id));
     }
 
-    public void replace(ProfissionalPutDto profissionalPutDto) {
+    public void update(ProfissionalPutDto profissionalPutDto) {
         Profissional saveProfissional = findById(profissionalPutDto.getId());
         Profissional profissional = ProfissionalMapper.toEntity(profissionalPutDto);
         profissional.setId(saveProfissional.getId());
         profissionalRepository.save(profissional);
     }
 
-    public Set<Profissional> findAllAvailableByConvenio(Convenio convenio) {
+    public Set<Profissional> findAllAvailableByConvenio(Integer convenioId) {
+        Convenio convenio = this.convenioService.findById(convenioId);
+        Set<Profissional> profissionais = profissionalRepository.findAllByConvenios(convenio);
+        if (profissionais.isEmpty()) {
+            throw new CustomException("Não existem profissionais para esse convênio", HttpStatus.NOT_FOUND);
+        }
+        return profissionais;
+    }
 
+    public Set<Profissional> findAllAvailableByPacienteUsername(Paciente paciente) {
+        Convenio convenio = this.convenioService.findById(paciente.getConvenio().getId());
         Set<Profissional> profissionais = profissionalRepository.findAllByConvenios(convenio);
         if (profissionais.isEmpty()) {
             throw new CustomException("Não existem profissionais para esse convênio", HttpStatus.NOT_FOUND);

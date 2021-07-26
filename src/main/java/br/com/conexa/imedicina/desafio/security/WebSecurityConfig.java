@@ -1,6 +1,7 @@
 package br.com.conexa.imedicina.desafio.security;
 
 
+import br.com.conexa.imedicina.desafio.service.AuthCorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +11,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -33,11 +37,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeRequests()//
+        http.addFilterAfter(new AuthCorsFilter(), ChannelProcessingFilter.class)
+                .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/profissionais/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .csrf().disable()
+                .formLogin().disable()
+                .logout().disable()
+                .httpBasic().disable();
 
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
@@ -51,6 +60,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/**")
                 .antMatchers("/webjars/**")
                 .antMatchers("/public")
+                .antMatchers("/auth/**")
+                .antMatchers("/profissionais/**")
                 .and()
                 .ignoring()
                 .antMatchers("/h2-console/**/**");

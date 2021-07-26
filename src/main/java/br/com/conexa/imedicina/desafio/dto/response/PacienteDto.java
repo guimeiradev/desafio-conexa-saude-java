@@ -9,6 +9,7 @@ import lombok.Data;
 public class PacienteDto {
     private Long id;
     private String fullName;
+    private String username;
     private String cpf;
     private Integer totalAppointment;
     private AccessStatus onlineAccessStatus;

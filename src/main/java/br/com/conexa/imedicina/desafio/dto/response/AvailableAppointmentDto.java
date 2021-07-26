@@ -10,10 +10,10 @@ import java.util.Set;
 
 @Data
 @Builder
-public class AppointmentDto {
+public class AvailableAppointmentDto {
 
     private Date schedule;
 
-    private ProfissionalDto profissional;
+    private Set<ProfissionalDto> profissionals;
 
 }

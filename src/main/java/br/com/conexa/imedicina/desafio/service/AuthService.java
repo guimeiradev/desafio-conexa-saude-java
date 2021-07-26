@@ -3,6 +3,8 @@ package br.com.conexa.imedicina.desafio.service;
 import br.com.conexa.imedicina.desafio.domain.Paciente;
 import br.com.conexa.imedicina.desafio.dto.request.LoginDto;
 import br.com.conexa.imedicina.desafio.dto.request.PacientePostDto;
+import br.com.conexa.imedicina.desafio.dto.response.AuthenticationResponse;
+import br.com.conexa.imedicina.desafio.enumerable.AccessStatus;
 import br.com.conexa.imedicina.desafio.exception.CustomException;
 import br.com.conexa.imedicina.desafio.mapper.PacienteMapper;
 import br.com.conexa.imedicina.desafio.security.JwtTokenProvider;
@@ -28,7 +30,7 @@ public class AuthService {
     private JwtTokenProvider jwtTokenProvider;
     private PasswordEncoder passwordEncoder;
 
-    public String login(LoginDto loginDto) {
+    public AuthenticationResponse login(LoginDto loginDto) {
         Paciente paciente = pacienteService.findByUsername(loginDto.getUsername());
 
         if (paciente == null)
@@ -37,8 +39,10 @@ public class AuthService {
             List<GrantedAuthority> role = new ArrayList<>();
             role.add((GrantedAuthority) () -> "Paciente");
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(paciente.getUsername(), loginDto.getPassword(), role));
+            paciente.setOnlineAccessStatus(AccessStatus.ONLINE);
             pacienteService.setPacienteStatusOnline(paciente);
-            return jwtTokenProvider.createToken(paciente.getUsername());
+            String token = jwtTokenProvider.createToken(paciente.getUsername());
+            return new AuthenticationResponse(token, PacienteMapper.toDto(paciente));
         } catch (AuthenticationException e) {
             throw new CustomException("Credenciais incorretas!", HttpStatus.UNAUTHORIZED);
         }
@@ -46,7 +50,7 @@ public class AuthService {
     }
 
 
-    public String signup(PacientePostDto pacientePostDto) {
+    public AuthenticationResponse signup(PacientePostDto pacientePostDto) {
         if (pacienteService.existsByUsername(pacientePostDto.getUsername())) {
             throw new CustomException("Paciente já cadastrado com esse usuário!", HttpStatus.BAD_REQUEST);
         }
@@ -54,7 +58,8 @@ public class AuthService {
         paciente.setPassword(this.passwordEncoder.encode(pacientePostDto.getPassword()));
         paciente.setConvenio(convenioService.findById(pacientePostDto.getConvenioId()));
 
-        this.pacienteService.save(paciente);
-        return this.jwtTokenProvider.createToken(pacientePostDto.getUsername());
+        Paciente pacienteUser = this.pacienteService.save(paciente);
+        String token = this.jwtTokenProvider.createToken(pacientePostDto.getUsername());
+        return new AuthenticationResponse(token, PacienteMapper.toDto(pacienteUser));
     }
 }

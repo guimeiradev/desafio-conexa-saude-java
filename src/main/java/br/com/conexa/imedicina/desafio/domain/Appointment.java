@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -37,5 +38,5 @@ public class Appointment {
     private Profissional profissional;
 
     @Column(name = "schedule_datetime", nullable = false)
-    private ZonedDateTime schedule;
+    private Date schedule;
 }

@@ -13,6 +13,7 @@ public abstract class PacienteMapper {
         return PacienteDto.builder().id(pacientes.getId())
                 .fullName(pacientes.getFullName())
                 .cpf(pacientes.getCpf())
+                .username(pacientes.getUsername())
                 .totalAppointment(pacientes.getTotalAppointment())
                 .onlineAccessStatus(pacientes.getOnlineAccessStatus())
                 .build();

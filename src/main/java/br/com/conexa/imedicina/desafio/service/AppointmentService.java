@@ -4,7 +4,7 @@ import br.com.conexa.imedicina.desafio.domain.Appointment;
 import br.com.conexa.imedicina.desafio.domain.Paciente;
 import br.com.conexa.imedicina.desafio.domain.Profissional;
 import br.com.conexa.imedicina.desafio.dto.request.ScheduleRequestDto;
-import br.com.conexa.imedicina.desafio.dto.response.AppointmentDto;
+import br.com.conexa.imedicina.desafio.dto.response.AvailableAppointmentDto;
 import br.com.conexa.imedicina.desafio.enumerable.AccessStatus;
 import br.com.conexa.imedicina.desafio.exception.CustomException;
 import br.com.conexa.imedicina.desafio.exception.ProfessionalAlreadyInUseException;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -64,25 +65,34 @@ public class AppointmentService {
                 .schedule(scheduleRequestDto.getScheduleDateTime())
                 .build();
 
+        paciente.setTotalAppointment(paciente.getTotalAppointment() + 1);
+
         this.appointmentRepository.save(appointment);
     }
 
-    public AppointmentDto findAvailableBySchedule(ZonedDateTime schedule, Long pacienteId) {
+    public AvailableAppointmentDto findAvailableBySchedule(Date schedule, Long pacienteId) {
         Paciente paciente = pacienteService.findById(pacienteId);
 
         if (paciente.getOnlineAccessStatus().equals(AccessStatus.OFFLINE))
             throw new CustomException("Paciente offline não pode agendar", HttpStatus.BAD_REQUEST);
 
-        Set<Profissional> profissionals = profissionalService.findAllAvailableByConvenio(paciente.getConvenio());
+        Set<Profissional> profissionals = profissionalService.findAllAvailableByConvenio(paciente.getConvenio().getId());
 
         Set<Profissional> profissionalsUnavailable = appointmentRepository
                 .findAllByProfissionalInAndSchedule(profissionals, schedule)
                 .stream().map(Appointment::getProfissional).collect(Collectors.toSet());
         profissionals.removeAll(profissionalsUnavailable);
 
-        return AppointmentDto.builder()
+        return AvailableAppointmentDto.builder()
                 .profissionals(profissionals.stream().map(ProfissionalMapper::toDto).collect(Collectors.toSet()))
                 .schedule(schedule)
                 .build();
     }
+
+    public Set<Appointment> findAllAppointmentByUser(String username) {
+        Paciente paciente = pacienteService.findByUsername(username);
+
+        return appointmentRepository.findAllByPaciente(paciente);
+    }
+
 }
